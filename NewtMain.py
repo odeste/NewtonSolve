@@ -22,7 +22,6 @@ def valDeriv(p,zeros):
     return(res)
 
 def newt (p,zeros):
-
     cpt = 0
     remain=valPoly (p,zeros)
     cont = True
@@ -49,7 +48,6 @@ def nearestIndice(p,lp):
 
 # Python program to swap two variables
 def test(zeros):
-
     p = -10
     print('The poly val is: {}'.format(newt(p,zeros)))
     print('The deriv val is: {}'.format(valDeriv(p,zeros)))
@@ -60,23 +58,30 @@ def test(zeros):
 
 def dessine(zeros):
     IndTimer = 0
-    mat = np.empty([2001,2001],dtype=np.int8, order='C') # C-style [lig][col]
-
-    for i in range(0,2000+1):
-        curIndTimer = i*100 // 2000
+    dimH = 2001
+    dimV = 2001
+    xMin = -3
+    xMax =  3
+    yMin = -2.7
+    yMax =  3.3
+    mat = np.empty([dimH,dimV],dtype=np.int8, order='C') # C-style [lig][col]
+    for h in range(0, dimH):
+        curIndTimer = h * 100 // dimH
         if curIndTimer != IndTimer:
             IndTimer = curIndTimer
             print("{}% ".format(curIndTimer),end='')
             sys.stdout.flush()
-        for j in range(-1000,1000+1):
-            p = (i/250)-4 + 1j*j/250
+        for v in range(0, dimV):
+            x = xMin+h*(xMax-xMin)/(dimH-1)
+            y = yMin+v*(yMax-yMin)/(dimV-1)
+            p = x + 1j*y
             rac1 = newt(p,zeros)
             res  =  nearestIndice(rac1,zeros)
-            lig = 2000-(1000+j)
-            col = i
+            lig = v
+            col = h
             mat[lig][col] = res
 
-    plt.matshow(mat)
+    plt.matshow(mat, origin='lower', aspect='equal')
     plt.axis(True)
     plt.cool()
     plt.title('Newtown Matrix {} roots'.format(len(zeros)))
