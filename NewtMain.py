@@ -58,33 +58,32 @@ def test(zeros):
 
 def dessine(zeros):
     IndTimer = 0
-    dimH = 2001
-    dimV = 2001
-    xMin = -3
-    xMax =  3
-    yMin = -2.7
-    yMax =  3.3
+    dimH = 1001
+    dimV = 1001
+    (xMin, xMax) = (0.7, 1.6)
+    (yMin, yMax) = (0.8, 1.7)
     mat = np.empty([dimH,dimV],dtype=np.int8, order='C') # C-style [lig][col]
     for h in range(0, dimH):
+        x = xMin+h*(xMax-xMin)/(dimH-1)
+
+        #From times to times, print the % of completion
         curIndTimer = h * 100 // dimH
         if curIndTimer != IndTimer:
             IndTimer = curIndTimer
             print("{}% ".format(curIndTimer),end='')
             sys.stdout.flush()
+
         for v in range(0, dimV):
-            x = xMin+h*(xMax-xMin)/(dimH-1)
             y = yMin+v*(yMax-yMin)/(dimV-1)
             p = x + 1j*y
             rac1 = newt(p,zeros)
             res  =  nearestIndice(rac1,zeros)
-            lig = v
-            col = h
-            mat[lig][col] = res
+            mat[v][h] = res
 
     plt.matshow(mat, origin='lower', aspect='equal')
     plt.axis(True)
-    plt.cool()
-    plt.title('Newtown Matrix {} roots'.format(len(zeros)))
+    plt.suptitle('Newtown Matrix {} roots'.format(len(zeros)))
+    plt.title('real:[{xmin} to {xmax}] and img:[{ymin} to {ymax}] '.format(xmin=xMin,xmax=xMax,ymin=yMin,ymax=yMax))
     plt.colorbar()
     plt.show()
 
