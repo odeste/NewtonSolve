@@ -11,6 +11,7 @@ NBFRAMES = 1100
 DIMH = 567
 DIMV = 567
 ficName = r"C://Users/Public/Videos/animation.mp4"
+ficName = r"./animation.mp4"
 
 def valPoly (p,zeros):
     """ :returns f(x) where f is (x-r0)*(x-r1)*(x-r2)... where r0,r1... are given in zeros
@@ -82,6 +83,8 @@ mat = np.empty([DIMH, DIMV], dtype=np.int8, order='C') # C-style [lig][col]
 
 fig, ax = plt.subplots()
 dessin = ax.matshow(mat, vmin=0, vmax=2, origin='lower', aspect='equal')
+ax.set_title("Which root Newton's method find first")
+ax.set_visible(True)
 
 def dessine(zeros, xMin, xMax, yMin, yMax):
 
@@ -104,17 +107,7 @@ def dessine(zeros, xMin, xMax, yMin, yMax):
             racInd  =  nearestIndice(rac1,zeros)
             mat[v][h] = racInd
 
-    print ('\n y from {yi:12.9} to {yf:12.9} '.format(yi = yMin, yf=yMax), end='')
     dessin.set_array(mat)
-
-"""
-    plt.matshow(mat, origin='lower', aspect='equal')
-    plt.axis(True)
-    plt.suptitle('Newtown Matrix {} roots'.format(len(zeros)))
-    plt.title('real:[{xmin:+.2f} to {xmax:+.2f}] and img:[{ymin:+.2f} to {ymax:+.2f}] '.format(xmin=xMin,xmax=xMax,ymin=yMin,ymax=yMax))
-    plt.colorbar()
-    plt.show()
-    """
 
 def anim(i):
     zeros = [1+0j,sqrt(3)*1j,-1+0j]
@@ -123,9 +116,12 @@ def anim(i):
     halfSize = (0.987654321) * pow(0.5, (i/25))
     print ('\nRemaing frame(s) : {rf:5} Half size is {hs:.9} '.format(rf = NBFRAMES-i, hs=halfSize), end='')
     dessine(zeros, xCenter-halfSize, xCenter+halfSize, yCenter-halfSize, yCenter+halfSize)
+    if (NBFRAMES-i <= 1):
+        print ('\nNewtown Matrix {} roots'.format(len(zeros)))
+        print ('Center is {xc:+.12f} +  {xc:+.12f} i. Window size being {ws:+.12f}'.format(xc=xCenter, yc=yCenter, ws=2*halfSize ))
 
 #print ('Preview of the last frame. Please close it')
-#anim(1100)
+#anim(NBFRAMES)
 #plt.show()
 
 fic = open(ficName,"w")
