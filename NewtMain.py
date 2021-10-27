@@ -7,6 +7,11 @@ import cmath # to use complex numbers. j^2 = -1 (caevat not j^3)
 from cmath import sqrt
 from math import pow
 
+NBFRAMES = 1100
+DIMH = 567
+DIMV = 567
+ficName = r"C://Users/Public/Videos/animation.mp4"
+
 def valPoly (p,zeros):
     """ :returns f(x) where f is (x-r0)*(x-r1)*(x-r2)... where r0,r1... are given in zeros
     p : float or complex
@@ -72,9 +77,7 @@ def test():
     print('Poly val for rac1 is : {}'.format(valPoly(rac1,zeros)))
     print('Rac1 indice in the zeros is : {}'.format(nearestIndice(rac1,zeros)))
 
-NBFRAMES = 1100
-DIMH = 567
-DIMV = 567
+
 mat = np.empty([DIMH, DIMV], dtype=np.int8, order='C') # C-style [lig][col]
 
 fig, ax = plt.subplots()
@@ -125,7 +128,6 @@ def anim(i):
 #anim(1100)
 #plt.show()
 
-ficName = r"C://Users/Public/Videos/animation.mp4"
 fic = open(ficName,"w")
 ani = animation.FuncAnimation(fig, anim, frames=NBFRAMES, interval=40, repeat=False)
 print ("ffmpeg shall be installed before using this code. Tentative de creation du fichier video ",ficName )
