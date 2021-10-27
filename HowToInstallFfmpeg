@@ -5,4 +5,4 @@ md5sum -c ffmpeg-git-amd64-static.tar.xz.md5
 tar xvf ffmpeg-git-amd64-static.tar.xz
 cd ffmpeg-git*
 sudo cp ffmpeg ffprobe /usr/bin
-chmod 755 /usr/bin/ffmpeg ffprobe
+sudo chmod 755 /usr/bin/ffmpeg /usr/bin/ffprobe
