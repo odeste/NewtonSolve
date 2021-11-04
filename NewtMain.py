@@ -7,7 +7,7 @@ import cmath # to use complex numbers. j^2 = -1 (caevat not j^3)
 from cmath import sqrt
 from math import pow
 
-NBFRAMES = 1100
+NBFRAMES = 1200
 DIMH = 567
 DIMV = 567
 ficName = r"C://Users/Public/Videos/animation.mp4"
@@ -36,8 +36,8 @@ def valDeriv(p,zeros):
         res += acc
     return(res)
 
-def newt (p,zeros):
-    """ :returns one approximative root of valPoly using newtown methods.
+def newt (p,zeros,epsilon):
+    """ :returns one approximative root of valPoly using newtown methods and also return nb of iterations.
     First guess is p
     p : float or complex
     zeros : list of floats or complexes beeing the true roots """
@@ -51,8 +51,8 @@ def newt (p,zeros):
 
         cpt += 1
         remain=valPoly (p,zeros)
-        cont =  (abs(remain) > 1E-20)
-    return p
+        cont =  (abs(remain) > epsilon)
+    return (p,cpt)
 
 def nearestIndice(p,lp):
     """ :returns indice in lp of the lp[] that is the nearest to p.
@@ -71,10 +71,10 @@ def test():
     """ tests the previous functions and print some results """
     zeros = [1+0j,sqrt(3)*1j,-1+0j]
     p = -10
-    print('The poly val is: {}'.format(newt(p,zeros)))
+    print('The poly val is: {}'.format(valPoly(p,zeros)))
     print('The deriv val is: {}'.format(valDeriv(p,zeros)))
-    rac1 = newt(p,zeros)
-    print('Rac1 is : {}'.format(rac1))
+    (rac1, cpt) = newt(p,zeros,1e-18)
+    print('Rac1 is : {} it was found after {} iterations.'.format(rac1,cpt))
     print('Poly val for rac1 is : {}'.format(valPoly(rac1,zeros)))
     print('Rac1 indice in the zeros is : {}'.format(nearestIndice(rac1,zeros)))
 
@@ -82,7 +82,7 @@ def test():
 mat = np.empty([DIMH, DIMV], dtype=np.int8, order='C') # C-style [lig][col]
 
 fig, ax = plt.subplots()
-dessin = ax.matshow(mat, vmin=0, vmax=2, origin='lower', aspect='equal')
+dessin = ax.matshow(mat, vmin=0, vmax=99, origin='lower', aspect='equal')
 ax.set_title("Which root Newton's method find first")
 ax.set_visible(True)
 
@@ -103,9 +103,10 @@ def dessine(zeros, xMin, xMax, yMin, yMax):
         for v in range(0, DIMV):
             y = yMin+v*(yMax-yMin)/(DIMV - 1)
             p = x + 1j*y
-            rac1 = newt(p,zeros)
+            (rac1,cpt) = newt(p,zeros,1e-4)
             racInd  =  nearestIndice(rac1,zeros)
             mat[v][h] = racInd
+            mat[v][h] = cpt
 
     dessin.set_array(mat)
 
@@ -113,7 +114,7 @@ def anim(i):
     zeros = [1+0j,sqrt(3)*1j,-1+0j]
     xCenter = 1.0615075438391
     yCenter = 1.433647289170145
-    halfSize = (0.987654321) * pow(0.5, (i/25))
+    halfSize = 16*(0.987654321) * pow(0.5, (i/25))
     print ('\nRemaing frame(s) : {rf:5} Half size is {hs:.9} '.format(rf = NBFRAMES-i, hs=halfSize), end='')
     dessine(zeros, xCenter-halfSize, xCenter+halfSize, yCenter-halfSize, yCenter+halfSize)
     if (NBFRAMES-i <= 1):
